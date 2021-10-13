@@ -2,23 +2,24 @@ extends layout
 
 block content 
    h1 Update #{book.title}
+   include errors
    form(action=`/books/${book.id}`, method='post')
         p
-            label(for='title') Title 
-            input(name='title', type='text', id='title')
+            label(for='title') Title :
+            input(name='title', type='text', id='title', class='form-input')
         p
-            label(for='author') Author 
-            input(name='author', type='text', id='author')
+            label(for='author') Author : 
+            input(name='author', type='text', id='author', class='form-input')
         p
-            label(for='genre') Genre 
-            input(name='genre', type='text', id='genre')
+            label(for='genre') Genre :
+            input(name='genre', type='text', id='genre', class='form-input')
         p
-            label(for='year') Year 
-            input(name='year', type='text', id='year')
+            label(for='year') Year :
+            input(name='year', type='text', id='year', class='form-input')
         p 
-            input(type ='submit', value="Update Book")   
+            input(type ='submit', value="Update Book", class='button')   
    form(action=`/books/${book.id}/delete`, method="post", onsubmit='{return confirm("Do you really want to delete this book?")}')
        p
           a(class='button', href='/books') Cancel
        p
-          input(type="submit", value="Delete Book")       
+          input(type="submit", value="Delete Book", class='button')       

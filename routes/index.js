@@ -32,20 +32,7 @@ router.get('/books', asyncHandler( async (req, res, next) => {
   }
 }))
 
-/**
- * Add navigation to the book list
- */
-router.get('/books/:page', asyncHandler( async (req, res, next) => {
-  const books = await Book.findAll({offset:10, limit: 10})
-  const bookNumber = await books.length
-  const nextPage=  parseInt(req.params.page) + 1
-  const lastPage= parseInt(req.params.page) - 1
-  if (bookNumber - 10 >0){
-    res.render('index', {books, title: "Book List", nextPage, lastPage, hasPrev: true, hasNext: true})
-} else{
-  res.render('index', {books, title: "Book List", nextPage, lastPage, hasPrev: true, hasNext: false})
-}
-}))
+
 /**
  * Form for creating new books
  */
@@ -133,6 +120,20 @@ router.post('/books/:id/delete', asyncHandler(async (req, res) => {
     
     res.sendStatus(404)
   }
+}))
+/**
+ * Add navigation to the book list
+ */
+ router.get('/books/page/:page', asyncHandler( async (req, res, next) => {
+  const books = await Book.findAll({offset:10, limit: 10})
+  const bookNumber = await books.length
+  const nextPage=  parseInt(req.params.page) + 1
+  const lastPage= parseInt(req.params.page) - 1
+  if (bookNumber - 10 >0){
+    res.render('index', {books, title: "Book List", nextPage, lastPage, hasPrev: true, hasNext: true})
+} else{
+  res.render('index', {books, title: "Book List", nextPage, lastPage, hasPrev: true, hasNext: false})
+}
 }))
   /**
    * Post method for search form
