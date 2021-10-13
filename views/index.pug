@@ -3,6 +3,7 @@ extends layout
 block content
   h1= title
   a(class="button", href="/books/new") Create New Book 
+  include searchField
   table 
     thead 
       tr 
@@ -17,4 +18,12 @@ block content
             a(href="/books/"+ book.id) #{book.title} 
           td #{book.author}
           td #{book.genre}
-          td #{book.year}   
+          td #{book.year}
+  if(hasNext)           
+    a(class='button', href='/books/'+ nextPage) Next Page
+  if(hasPrev > 2)  
+    a(class='button', href='/books/'+ lastPage) Previous Page
+  else if (hasPrev)
+    a(class='button', href='/books') Previous Page   
+  //- else if (hasNext)
+  //-   a(class='button', href='/books/'+ nextPage) Next Page  

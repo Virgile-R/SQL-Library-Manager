@@ -1,0 +1,6 @@
+if(errors)
+  h2.errors There was a problem with your submission!
+  ul.errors
+    each error in errors
+      li
+        =error.message
