@@ -3,7 +3,10 @@ var router = express.Router();
 const Book = require("../models").Book
 const { Op } = require("sequelize");
 
-/* Handler function to wrap each route. */
+/* Handler function to wrap each route. 
+Code from the Using SQL ORM with Express Workshop, thanks TreeHouse!
+
+*/
 function asyncHandler(cb){
   return async(req, res, next) => {
     try {
@@ -14,8 +17,9 @@ function asyncHandler(cb){
     }
   }
 }
-/* GET home page. */
+/* GET home page. redirect to books */
 router.get('/', asyncHandler( async (req, res, next) => {
+  
   res.redirect("/books")
 }));
 /**
@@ -125,14 +129,22 @@ router.post('/books/:id/delete', asyncHandler(async (req, res) => {
  * Add navigation to the book list
  */
  router.get('/books/page/:page', asyncHandler( async (req, res, next) => {
-  const books = await Book.findAll({offset:10, limit: 10})
+  const offset = (req.params.page * 10) - 10
+  let books
+  if (Number.isInteger(parseInt(req.params.page))){ 
+    books = await Book.findAll({offset:offset, limit: 10})
+  } else {
+    res.sendStatus(404)
+  }
   const bookNumber = await books.length
   const nextPage=  parseInt(req.params.page) + 1
   const lastPage= parseInt(req.params.page) - 1
-  if (bookNumber - 10 >0){
+  if (bookNumber - 10 >=0){
     res.render('index', {books, title: "Book List", nextPage, lastPage, hasPrev: true, hasNext: true})
-} else{
+} else if (bookNumber > 0){
   res.render('index', {books, title: "Book List", nextPage, lastPage, hasPrev: true, hasNext: false})
+} else if (isNaN(bookNumber) || bookNumber === 0){
+  res.sendStatus(404)
 }
 }))
   /**

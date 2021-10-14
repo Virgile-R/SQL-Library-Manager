@@ -19,10 +19,11 @@ block content
           td #{book.author}
           td #{book.genre}
           td #{book.year}
-  if(hasNext)           
-    a(class='button', href='/books/page/'+ nextPage) Next Page
-  if(lastPage > 2)  
+  if(lastPage > 1)  
     a(class='button', href='/books/page/'+ lastPage) Previous Page
   else if (hasPrev)
-    a(class='button', href='/books') Previous Page   
+    a(class='button', href='/books') Previous Page             
+  if(hasNext)           
+    a(class='button', href='/books/page/'+ nextPage) Next Page
+  
   
