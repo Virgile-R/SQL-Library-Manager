@@ -41,7 +41,7 @@ router.get('/books', asyncHandler( async (req, res, next) => {
  * Form for creating new books
  */
 router.get('/books/new', asyncHandler(async (req, res, next) => {
-  res.render('newbook', {article: {}, title: "Enter new book"})
+  res.render('new-book', {article: {}, title: "Enter new book"})
 }))
 
 /**
@@ -56,7 +56,7 @@ router.post('/books/new', asyncHandler(async (req, res) => {
     if(error.name === "SequelizeValidationError"){
       console.log(error)
       book = await Book.build(req.body)
-      res.render('newbook', {book, errors: error.errors, title: 'Enter new book'})
+      res.render('new-book', {book, errors: error.errors, title: 'Enter new book'})
     } else {
       throw error
     }
@@ -65,29 +65,35 @@ router.post('/books/new', asyncHandler(async (req, res) => {
 /**
  * Route for individual book
  */
-router.get('/books/:id', asyncHandler(async (req, res) => {
+router.get('/books/:id', asyncHandler(async (req, res, next) => {
   const book = await Book.findByPk(req.params.id)
   if (book){
     res.render("book", {book, title: book.title})
   } else {
-    res.sendStatus(404)
+    const err = new Error();
+    err.status = 404
+    err.message = "Page Not Found"
+    next(err)
   }
 }))
 /**
  * Form for editing books
  */
-router.get('/books/:id/edit', asyncHandler(async (req, res) => {
+router.get('/books/:id/edit', asyncHandler(async (req, res, next) => {
   const book = await Book.findByPk(req.params.id)
   if (book){
-    res.render('bookEdit', {book, title: "Edit book"})
+    res.render('update-book', {book, title: "Edit book"})
   } else {
-    res.sendStatus(404)
+    const err = new Error();
+    err.status = 404
+    err.message = "Page Not Found"
+    next(err)
   }
 }))
 /**
  * Post method for editing books
  */
-router.post('/books/:id', asyncHandler(async (req, res) => {
+router.post('/books/:id', asyncHandler(async (req, res, next) => {
   let book
   try {
     book = await Book.findByPk(req.params.id);
@@ -95,15 +101,17 @@ router.post('/books/:id', asyncHandler(async (req, res) => {
       await book.update(req.body)
       res.redirect('/books/' + book.id)
     }else {
-      res.sendStatus(404)
+      const err = new Error();
+      err.status = 404
+      err.message = "Page Not Found"
+      next(err)
     }
     
   } catch (error) {
     
     if(error.name === "SequelizeValidationError"){
-      
-      book = await Book.build(req.body)
-      res.render('bookEdit', {book, errors: error.errors, title: 'Edit book'})
+      //since the book info is already present, no need to build it again...
+      res.render('update-book', {book, errors: error.errors, title: 'Edit book'})
     } else {
       throw error
     }
@@ -121,8 +129,10 @@ router.post('/books/:id/delete', asyncHandler(async (req, res) => {
     await book.destroy()
     res.redirect("/")
   } else {
-    
-    res.sendStatus(404)
+    const err = new Error();
+    err.status = 404
+    err.message = "Page Not Found"
+    next(err)
   }
 }))
 /**
@@ -144,7 +154,10 @@ router.post('/books/:id/delete', asyncHandler(async (req, res) => {
 } else if (bookNumber > 0){
   res.render('index', {books, title: "Book List", nextPage, lastPage, hasPrev: true, hasNext: false})
 } else if (isNaN(bookNumber) || bookNumber === 0){
-  res.sendStatus(404)
+  const err = new Error();
+    err.status = 404
+    err.message = "Page Not Found"
+    next(err)
 }
 }))
   /**

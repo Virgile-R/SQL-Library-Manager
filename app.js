@@ -24,7 +24,7 @@ app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404, 'Page not found'));
+   next(createError(404, 'Page not found'));
 });
 
 // error handler
@@ -33,11 +33,10 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message || "Something went wrong...";
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  
+  // render the error page  
   res.status(err.status || 500);
   if (res.statusCode === 404){
-    res.render("pagenotfound", {err})
+    res.render("page-not-found", {err})
   } else {
     console.error(err.status + ': ' + err.message)
     res.render('error', {err});
@@ -46,11 +45,11 @@ app.use(function(err, req, res, next) {
 (async () => {
   try {
     await sequelize.authenticate();
-    console.log('Lessa go');
+    console.log('Database present, syncing...');
     await sequelize.sync()
     console.log('database synced')
   } catch (error){  
-    console.error('RIP' + error)
+    console.error('An error occured' + error)
   }
 })();
 module.exports = app;
